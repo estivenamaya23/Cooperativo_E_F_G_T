@@ -1,0 +1,137 @@
+[
+  {
+    "id": "P01",
+    "fecha": "2026-10-01",
+    "satelite": "Sentinel-2A",
+    "latitud": -0.72,
+    "longitud": -90.31,
+    "nubosidad_pct": 12,
+    "aptitud_sensor_pct": 91
+  },
+  {
+    "id": "P02",
+    "fecha": "2026-10-03",
+    "satelite": "Sentinel-2B",
+    "latitud": -0.83,
+    "longitud": -91.12,
+    "nubosidad_pct": 28,
+    "aptitud_sensor_pct": 76
+  },
+  {
+    "id": "P03",
+    "fecha": "2026-10-05",
+    "satelite": "Sentinel-2A",
+    "latitud": -0.54,
+    "longitud": -90.72,
+    "nubosidad_pct": 8,
+    "aptitud_sensor_pct": 94
+  },
+  {
+    "id": "P04",
+    "fecha": "2026-10-07",
+    "satelite": "Sentinel-2B",
+    "latitud": -0.91,
+    "longitud": -89.62,
+    "nubosidad_pct": 63,
+    "aptitud_sensor_pct": 48
+  },
+  {
+    "id": "P05",
+    "fecha": "2026-10-09",
+    "satelite": "Sentinel-2A",
+    "latitud": -0.62,
+    "longitud": -90.45,
+    "nubosidad_pct": 18,
+    "aptitud_sensor_pct": 87
+  },
+  {
+    "id": "P06",
+    "fecha": "2026-10-11",
+    "satelite": "Sentinel-2B",
+    "latitud": -1.02,
+    "longitud": -90.88,
+    "nubosidad_pct": 41,
+    "aptitud_sensor_pct": 66
+  },
+  {
+    "id": "P07",
+    "fecha": "2026-10-13",
+    "satelite": "Sentinel-2A",
+    "latitud": -0.76,
+    "longitud": -90.27,
+    "nubosidad_pct": 5,
+    "aptitud_sensor_pct": 98
+  },
+  {
+    "id": "P08",
+    "fecha": "2026-10-15",
+    "satelite": "Sentinel-2B",
+    "latitud": -0.48,
+    "longitud": -91.01,
+    "nubosidad_pct": 35,
+    "aptitud_sensor_pct": 72
+  },
+  {
+    "id": "P09",
+    "fecha": "2026-10-17",
+    "satelite": "Sentinel-2A",
+    "latitud": -0.68,
+    "longitud": -90.52,
+    "nubosidad_pct": 22,
+    "aptitud_sensor_pct": 83
+  },
+  {
+    "id": "P10",
+    "fecha": "2026-10-19",
+    "satelite": "Sentinel-2B",
+    "latitud": -0.79,
+    "longitud": -89.94,
+    "nubosidad_pct": 74,
+    "aptitud_sensor_pct": 39
+  },
+  {
+    "id": "P11",
+    "fecha": "2026-10-21",
+    "satelite": "Sentinel-2A",
+    "latitud": -0.59,
+    "longitud": -90.83,
+    "nubosidad_pct": 16,
+    "aptitud_sensor_pct": 90
+  },
+  {
+    "id": "P12",
+    "fecha": "2026-10-23",
+    "satelite": "Sentinel-2B",
+    "latitud": -0.94,
+    "longitud": -90.19,
+    "nubosidad_pct": 52,
+    "aptitud_sensor_pct": 61
+  },
+  {
+    "id": "P13",
+    "fecha": "2026-10-25",
+    "satelite": "Sentinel-2A",
+    "latitud": -0.65,
+    "longitud": -90.37,
+    "nubosidad_pct": 9,
+    "aptitud_sensor_pct": 96
+  },
+  {
+    "id": "P14",
+    "fecha": "2026-10-27",
+    "satelite": "Sentinel-2B",
+    "latitud": -0.86,
+    "longitud": -91.24,
+    "nubosidad_pct": 31,
+    "aptitud_sensor_pct": 74
+  },
+  {
+    "id": "P15",
+    "fecha": "2026-10-29",
+    "satelite": "Sentinel-2A",
+    "latitud": -0.57,
+    "longitud": -90.61,
+    "nubosidad_pct": 14,
+    "aptitud_sensor_pct": 89
+  }
+]

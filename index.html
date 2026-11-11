@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Dashboard académico PlasTrack con pasadas satelitales simuladas sobre las islas Galápagos.">
+    <title>PlasTrack | Pasadas satelitales</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="PlasTrack, inicio">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <span>PlasTrack</span>
+      </a>
+      <p class="header-note">Explorador académico · Islas Galápagos</p>
+    </header>
+
+    <main class="dashboard">
+      <section class="intro" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Monitoreo satelital</p>
+          <h1 id="page-title">Pasadas sobre Galápagos</h1>
+          <p class="intro-copy">Consulta la nubosidad y la aptitud del sensor en cada pasada.</p>
+        </div>
+        <p class="simulation-badge"><span aria-hidden="true">●</span> Datos simulados, no son observaciones reales</p>
+      </section>
+
+      <div id="data-error" class="data-error" role="alert" hidden></div>
+
+      <section class="kpi-grid" aria-label="Indicadores principales">
+        <article class="kpi-card">
+          <p class="kpi-label">Pasadas registradas</p>
+          <p class="kpi-value" id="kpi-total" aria-live="polite">—</p>
+          <p class="kpi-hint">Registros cargados</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Nubosidad promedio</p>
+          <p class="kpi-value" id="kpi-cloud" aria-live="polite">—</p>
+          <p class="kpi-hint">Porcentaje por pasada</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Aptitud promedio</p>
+          <p class="kpi-value" id="kpi-suitability" aria-live="polite">—</p>
+          <p class="kpi-hint">Aptitud del sensor</p>
+        </article>
+        <article class="kpi-card kpi-card-highlight">
+          <p class="kpi-label">Pasadas aptas</p>
+          <p class="kpi-value" id="kpi-suitable" aria-live="polite">—</p>
+          <p class="kpi-hint">Umbral: aptitud ≥ 70 %</p>
+        </article>
+      </section>
+
+      <section class="content-grid" aria-label="Visualizaciones de pasadas">
+        <article class="panel map-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Distribución geográfica</p>
+              <h2>Mapa de pasadas</h2>
+            </div>
+            <span class="panel-meta">Haz clic en un punto para ver sus datos</span>
+          </div>
+          <div id="map" class="map" role="region" aria-label="Mapa interactivo con imágenes satelitales de las islas Galápagos y pasadas simuladas">
+            <div class="map-context" aria-hidden="true">
+              <span class="map-context-dot"></span>
+              <span><strong>Islas Galápagos</strong><small>Océano Pacífico · Ecuador</small></span>
+            </div>
+          </div>
+          <div class="map-legend" aria-label="Leyenda del mapa">
+            <span><i class="legend-dot legend-good"></i>Aptitud ≥ 70 %</span>
+            <span><i class="legend-dot legend-low"></i>Aptitud &lt; 70 %</span>
+            <span><i class="legend-gradient"></i>Densidad de pasadas</span>
+          </div>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Calidad por fecha</p>
+              <h2>Nubosidad y aptitud</h2>
+            </div>
+          </div>
+          <p class="chart-description">Porcentaje de nubosidad y aptitud del sensor en cada pasada.</p>
+          <div class="chart-wrap">
+            <canvas id="passes-chart" role="img" aria-label="Gráfico de líneas de nubosidad y aptitud del sensor por fecha"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <footer class="page-footer">
+        <span>PlasTrack · Proyecto académico</span>
+        <span>Los datos de demostración son sintéticos y no describen mediciones reales.</span>
+      </footer>
+    </main>
+  </body>
+</html>
