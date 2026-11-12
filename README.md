@@ -2,6 +2,8 @@
 
 Dashboard web estático para explorar 15 pasadas satelitales **simuladas** sobre las islas Galápagos. Los valores incluidos son únicamente de ejemplo: no representan observaciones satelitales reales ni productos oficiales de Copernicus.
 
+**Sitio publicado:** [https://estivenamaya23.github.io/Cooperativo_E_F_G_T/](https://estivenamaya23.github.io/Cooperativo_E_F_G_T/)
+
 ## Abrir el dashboard en tu computadora
 
 1. Descarga o clona este repositorio.
@@ -40,15 +42,11 @@ Para reemplazar la muestra simulada por el archivo oficial de la clase:
 
 El umbral de pasada apta es una aptitud del sensor de **70 % o más**.
 
-## Publicar en GitHub Pages
+## Publicación en GitHub Pages
 
-1. Añade estos archivos al repositorio y súbelos a GitHub mediante tu flujo habitual: `index.html`, `styles.css`, `app.js`, `data_copernicus_sample.json`, `README.md`, `docs/reporte-tecnico.md`, `docs/presentacion-plastrack.pptx` y `BITACORA_IA.md`.
-2. En la página del repositorio, abre **Settings → Pages**.
-3. En **Build and deployment**, selecciona **Deploy from a branch**.
-4. Elige la rama que contiene estos archivos y la carpeta raíz (`/`) como origen; guarda los cambios.
-5. Espera a que GitHub Pages complete la publicación y consulta la URL que aparece en **Settings → Pages**.
+El proyecto está publicado desde la rama `main` y la carpeta raíz (`/`). Para comprobar la configuración, abre **Settings → Pages** en el repositorio. Al subir cambios a `main`, GitHub Pages vuelve a desplegar el sitio; revisa **Actions → pages build and deployment** y espera a que el flujo termine correctamente.
 
-Este repositorio queda preparado para ese flujo; estas instrucciones no implican que el sitio ya esté publicado. El mapa base y las bibliotecas se obtienen de servicios externos, sujetos a disponibilidad y a sus condiciones de uso.
+La URL pública es [https://estivenamaya23.github.io/Cooperativo_E_F_G_T/](https://estivenamaya23.github.io/Cooperativo_E_F_G_T/). Se verificó que la página, el JSON de muestra, JavaScript y CSS responden. El mapa base, las etiquetas y bibliotecas se obtienen de servicios externos y dependen de su disponibilidad y condiciones de uso.
 
 ## Archivos
 
