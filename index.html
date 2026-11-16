@@ -90,6 +90,68 @@
         <p class="filter-help">Las fechas deben ser reales y usar el formato AAAA-MM-DD. La zona se habilita si existe en el JSON.</p>
       </section>
 
+      <section class="panel statistics-panel" aria-labelledby="statistics-title">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Resumen estadístico</p>
+            <h2 id="statistics-title">Estadísticas de los registros filtrados</h2>
+          </div>
+          <span class="panel-meta">Se actualizan junto con el mapa y las tendencias</span>
+        </div>
+        <div class="statistics-grid">
+          <article class="statistics-card">
+            <h3>Estadística descriptiva</h3>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th scope="col">Medida</th><th scope="col">Nubosidad</th><th scope="col">Aptitud</th></tr>
+                </thead>
+                <tbody id="descriptive-stats-body"></tbody>
+              </table>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <h3>Distribución por aptitud</h3>
+            <div class="distribution-layout">
+              <div class="chart-wrap distribution-chart-wrap">
+                <canvas id="chart-distribution" role="img" aria-label="Gráfico de dona de distribución por aptitud"></canvas>
+                <p id="chart-distribution-message" class="chart-message" role="status" hidden></p>
+              </div>
+              <div id="distribution-legend" class="distribution-legend" aria-live="polite"></div>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <h3>Correlación de Pearson</h3>
+            <p class="correlation-value" id="correlation-value">—</p>
+            <p class="correlation-description" id="correlation-description">Sin datos suficientes para calcularla.</p>
+          </article>
+          <article class="statistics-card">
+            <h3>Extremos del filtro</h3>
+            <dl class="extremes-list">
+              <div><dt>Mejor pasada</dt><dd id="extreme-best">—</dd></div>
+              <div><dt>Peor pasada</dt><dd id="extreme-worst">—</dd></div>
+              <div><dt>Mayor nubosidad</dt><dd id="extreme-cloud">—</dd></div>
+            </dl>
+          </article>
+          <article class="statistics-card statistics-card-wide">
+            <h3>Resumen por isla / zona</h3>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Isla / Zona</th>
+                    <th scope="col">Promedio nubosidad</th>
+                    <th scope="col">Promedio aptitud</th>
+                    <th scope="col">Conteo</th>
+                  </tr>
+                </thead>
+                <tbody id="zone-stats-body"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section class="content-grid" aria-label="Mapa y gráficos">
         <article class="panel map-panel">
           <div class="panel-heading">
@@ -97,19 +159,27 @@
               <p class="eyebrow">Distribución geográfica</p>
               <h2>Pasadas sobre Galápagos</h2>
             </div>
-            <label class="heat-toggle"><input id="heat-toggle" type="checkbox" checked> Mostrar calor</label>
+            <span class="map-count" id="map-count" aria-live="polite">0 pasadas en mapa</span>
+          </div>
+          <div class="map-controls">
+            <label class="heat-toggle"><input id="heat-toggle" type="checkbox" checked disabled> Mostrar calor</label>
+            <button class="button button-secondary" id="center-map" type="button">Centrar Galápagos</button>
           </div>
           <div id="map" class="map" role="region" aria-label="Mapa de Galápagos con pasadas satelitales simuladas">
             <div class="map-context" aria-hidden="true">
               <span class="map-context-dot"></span>
               <span><strong>Islas Galápagos</strong><small>Océano Pacífico · Ecuador</small></span>
             </div>
+            <div id="map-error" class="map-error" role="alert" hidden></div>
+            <a class="map-attribution" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">
+              © OpenStreetMap contributors
+            </a>
           </div>
           <div class="map-legend" aria-label="Leyenda del mapa">
             <span><i class="legend-dot legend-good"></i>Aptitud ≥ 70 %</span>
             <span><i class="legend-dot legend-mid"></i>Aptitud 40–69 %</span>
             <span><i class="legend-dot legend-low"></i>Aptitud &lt; 40 %</span>
-            <span><i class="legend-gradient"></i>Calor ponderado por aptitud simulada</span>
+            <span><i class="legend-heat legend-heat-low"></i><i class="legend-heat legend-heat-high"></i>Radio/color del calor = nubosidad</span>
           </div>
         </article>
 
@@ -123,7 +193,7 @@
             </div>
             <div class="chart-wrap">
               <canvas id="chart-cloud" role="img" aria-label="Gráfico de línea de nubosidad por fecha"></canvas>
-              <p id="chart-cloud-empty" class="chart-empty" hidden>Sin datos para el filtro seleccionado.</p>
+              <p id="chart-cloud-message" class="chart-message" role="status" hidden></p>
             </div>
           </article>
           <article class="panel chart-panel">
@@ -135,7 +205,7 @@
             </div>
             <div class="chart-wrap">
               <canvas id="chart-fitness" role="img" aria-label="Gráfico de línea de aptitud por fecha"></canvas>
-              <p id="chart-fitness-empty" class="chart-empty" hidden>Sin datos para el filtro seleccionado.</p>
+              <p id="chart-fitness-message" class="chart-message" role="status" hidden></p>
             </div>
           </article>
         </section>
@@ -158,18 +228,17 @@
                 <th scope="col">Nubosidad</th>
                 <th scope="col">Aptitud</th>
                 <th scope="col">Estado</th>
-                <th scope="col">ID pasada</th>
               </tr>
             </thead>
             <tbody id="passes-table-body">
-              <tr><td class="table-empty" colspan="6">Cargando datos…</td></tr>
+              <tr><td class="table-empty" colspan="5">Cargando datos…</td></tr>
             </tbody>
           </table>
         </div>
       </section>
 
       <footer class="page-footer">
-        <span>PlasTrack · Proyecto académico · DATOS SIMULADOS</span>
+        <span class="simulation-badge">DATOS SIMULADOS - FINES ACADÉMICOS</span>
         <span>Los indicadores y la capa de calor no son observaciones satelitales reales.</span>
       </footer>
     </main>

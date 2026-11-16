@@ -13,13 +13,15 @@ python3 -m json.tool data_copernicus_sample.json
 python3 -m http.server 8000
 ```
 
-Abre <http://localhost:8000>. Se requiere conexión a internet para descargar Leaflet, Leaflet.heat, Chart.js y los mosaicos del mapa base de OpenStreetMap. Abrir `index.html` directamente como archivo puede bloquear `fetch()` del JSON.
+Abre <http://localhost:8000>. Se requiere conexión a internet para descargar Leaflet, Chart.js y los mosaicos del mapa base de OpenStreetMap. Abrir `index.html` directamente como archivo puede bloquear `fetch()` del JSON.
 
 ## Datos que usa el dashboard
 
 Se verificaron los campos del archivo: `id`, `fecha`, `satelite`, `latitud`, `longitud`, `nubosidad_pct` y `aptitud_sensor_pct`. **No hay campos `isla` ni `zona`**; por ello, el filtro Isla/Zona queda desactivado, y las ubicaciones se muestran como “No incluida en el JSON”. No se inventan localizaciones.
 
-Los KPI, la tabla, los marcadores y los dos gráficos leen el archivo local. El filtro por fecha valida fechas de calendario reales en formato `AAAA-MM-DD`; una pasada es apta cuando su aptitud es de 70 % o más. El toggle de calor muestra una capa ponderada por aptitud simulada, no concentración física observada. La fecha más reciente que se muestra se deriva de la fecha mayor del dataset, no del momento de modificación del archivo.
+Los KPI, las estadísticas descriptivas, la distribución de aptitud, la correlación, el mapa, los gráficos y la tabla leen el mismo conjunto filtrado. El filtro por fecha valida fechas reales de calendario en formato `AAAA-MM-DD`; una pasada es apta cuando su aptitud es de 70 % o más. El mapa Leaflet conserva sus marcadores y usa círculos de calor cuyo radio y color representan la nubosidad simulada; el toggle controla solo esa capa. La atribución «© OpenStreetMap contributors» permanece visible. La fecha más reciente se deriva de la fecha mayor del dataset, no del momento de modificación del archivo.
+
+El JSON actual no incluye `isla` ni `zona`. En consecuencia, el filtro geográfico se desactiva y las estadísticas por isla explican que esa columna no existe; no se asignan nombres de islas ficticios. El mapa, sus controles y leyenda permanecen en la página incluso si Leaflet no puede descargarse; se muestra un aviso dentro del mapa con pasos para revisar la conexión/CDN.
 
 Para reemplazar el ejemplo por datos oficiales de la clase, conserva una copia del JSON y reemplaza el arreglo por registros compatibles. Revisa primero sus nombres de campo, tipos, unidades, coordenadas y permiso de publicación. Si el nuevo archivo no incluye `isla` o `zona`, la interfaz informará que esa dimensión no está disponible. No publiques credenciales ni datos con restricciones.
 
