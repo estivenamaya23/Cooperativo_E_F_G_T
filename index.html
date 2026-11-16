@@ -59,6 +59,77 @@
         </article>
       </section>
 
+      <section class="panel statistics-panel" aria-labelledby="statistics-title">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Resumen estadístico</p>
+            <h2 id="statistics-title">Estadísticas - Datos Simulados</h2>
+          </div>
+          <span class="panel-meta">Se actualizan junto con el mapa y las tendencias</span>
+        </div>
+        <div class="statistics-grid">
+          <article class="statistics-card">
+            <h3>Estadística descriptiva</h3>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr><th scope="col">Medida</th><th scope="col">Nubosidad</th><th scope="col">Aptitud</th></tr>
+                </thead>
+                <tbody id="descriptive-stats-body"></tbody>
+              </table>
+            </div>
+            <p class="stats-formula">Media = Σx / n · Mediana = valor central ordenado (media de los dos centrales si n es par) · Desviación estándar poblacional = √(Σ(x − media)² / n) · Rango = máximo − mínimo</p>
+          </article>
+          <article class="statistics-card">
+            <h3>Distribución por aptitud</h3>
+            <div class="distribution-layout">
+              <div class="chart-wrap distribution-chart-wrap">
+                <canvas id="chart-distribution" role="img" aria-label="Gráfico de dona de distribución por aptitud"></canvas>
+                <p id="chart-distribution-message" class="chart-message" role="status" hidden></p>
+              </div>
+              <div id="distribution-legend" class="distribution-legend" aria-live="polite"></div>
+            </div>
+          </article>
+          <article class="statistics-card">
+            <h3>Correlación de Pearson</h3>
+            <p class="correlation-value" id="correlation-value">—</p>
+            <p class="correlation-description" id="correlation-description">Sin datos suficientes para calcularla.</p>
+          </article>
+          <article class="statistics-card">
+            <h3>Extremos del filtro</h3>
+            <dl class="extremes-list">
+              <div><dt>Mejor pasada</dt><dd id="extreme-best">—</dd></div>
+              <div><dt>Peor pasada</dt><dd id="extreme-worst">—</dd></div>
+              <div><dt>Mayor nubosidad</dt><dd id="extreme-cloud">—</dd></div>
+            </dl>
+          </article>
+          <article class="statistics-card">
+            <h3>Tendencia entre primer y último registro</h3>
+            <p class="trend-value" id="trend-fitness">—</p>
+            <p class="trend-note" id="trend-fitness-note">Sin datos para el filtro.</p>
+            <p class="trend-value" id="trend-cloud">—</p>
+            <p class="trend-note" id="trend-cloud-note">Sin datos para el filtro.</p>
+          </article>
+          <article class="statistics-card statistics-card-wide">
+            <h3>Resumen por isla / zona</h3>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Isla / Zona</th>
+                    <th scope="col">Nº pasadas</th>
+                    <th scope="col">Promedio nubosidad</th>
+                    <th scope="col">Promedio aptitud</th>
+                    <th scope="col">% aptas</th>
+                  </tr>
+                </thead>
+                <tbody id="zone-stats-body"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section class="panel filters-panel" aria-labelledby="filters-title">
         <div class="section-title">
           <div>
@@ -90,68 +161,6 @@
         <p class="filter-help">Las fechas deben ser reales y usar el formato AAAA-MM-DD. La zona se habilita si existe en el JSON.</p>
       </section>
 
-      <section class="panel statistics-panel" aria-labelledby="statistics-title">
-        <div class="section-title">
-          <div>
-            <p class="eyebrow">Resumen estadístico</p>
-            <h2 id="statistics-title">Estadísticas de los registros filtrados</h2>
-          </div>
-          <span class="panel-meta">Se actualizan junto con el mapa y las tendencias</span>
-        </div>
-        <div class="statistics-grid">
-          <article class="statistics-card">
-            <h3>Estadística descriptiva</h3>
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr><th scope="col">Medida</th><th scope="col">Nubosidad</th><th scope="col">Aptitud</th></tr>
-                </thead>
-                <tbody id="descriptive-stats-body"></tbody>
-              </table>
-            </div>
-          </article>
-          <article class="statistics-card">
-            <h3>Distribución por aptitud</h3>
-            <div class="distribution-layout">
-              <div class="chart-wrap distribution-chart-wrap">
-                <canvas id="chart-distribution" role="img" aria-label="Gráfico de dona de distribución por aptitud"></canvas>
-                <p id="chart-distribution-message" class="chart-message" role="status" hidden></p>
-              </div>
-              <div id="distribution-legend" class="distribution-legend" aria-live="polite"></div>
-            </div>
-          </article>
-          <article class="statistics-card">
-            <h3>Correlación de Pearson</h3>
-            <p class="correlation-value" id="correlation-value">—</p>
-            <p class="correlation-description" id="correlation-description">Sin datos suficientes para calcularla.</p>
-          </article>
-          <article class="statistics-card">
-            <h3>Extremos del filtro</h3>
-            <dl class="extremes-list">
-              <div><dt>Mejor pasada</dt><dd id="extreme-best">—</dd></div>
-              <div><dt>Peor pasada</dt><dd id="extreme-worst">—</dd></div>
-              <div><dt>Mayor nubosidad</dt><dd id="extreme-cloud">—</dd></div>
-            </dl>
-          </article>
-          <article class="statistics-card statistics-card-wide">
-            <h3>Resumen por isla / zona</h3>
-            <div class="table-scroll">
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Isla / Zona</th>
-                    <th scope="col">Promedio nubosidad</th>
-                    <th scope="col">Promedio aptitud</th>
-                    <th scope="col">Conteo</th>
-                  </tr>
-                </thead>
-                <tbody id="zone-stats-body"></tbody>
-              </table>
-            </div>
-          </article>
-        </div>
-      </section>
-
       <section class="content-grid" aria-label="Mapa y gráficos">
         <article class="panel map-panel">
           <div class="panel-heading">
@@ -165,7 +174,7 @@
             <label class="heat-toggle"><input id="heat-toggle" type="checkbox" checked disabled> Mostrar calor</label>
             <button class="button button-secondary" id="center-map" type="button">Centrar Galápagos</button>
           </div>
-          <div id="map" class="map" role="region" aria-label="Mapa de Galápagos con pasadas satelitales simuladas">
+          <div id="map" class="map" style="height: 480px; width: 100%;" role="region" aria-label="Mapa de Galápagos con pasadas satelitales simuladas">
             <div class="map-context" aria-hidden="true">
               <span class="map-context-dot"></span>
               <span><strong>Islas Galápagos</strong><small>Océano Pacífico · Ecuador</small></span>

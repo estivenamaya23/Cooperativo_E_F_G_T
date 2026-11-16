@@ -238,6 +238,26 @@ h2 {
   font-size: 0.88rem;
 }
 
+.stats-formula {
+  margin: 9px 0 0;
+  color: var(--muted);
+  font-size: 0.66rem;
+  line-height: 1.45;
+}
+
+.trend-value {
+  margin: 0 0 3px;
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.trend-note {
+  margin: 0 0 11px;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
 .statistics-card table {
   font-size: 0.72rem;
 }
@@ -848,7 +868,7 @@ tbody tr:last-child td {
   }
 
   .map {
-    height: 320px;
+    height: 320px !important;
   }
 
   .charts-grid {

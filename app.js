@@ -39,6 +39,10 @@ const elements = {
   extremeBest: document.getElementById("extreme-best"),
   extremeWorst: document.getElementById("extreme-worst"),
   extremeCloud: document.getElementById("extreme-cloud"),
+  trendFitness: document.getElementById("trend-fitness"),
+  trendFitnessNote: document.getElementById("trend-fitness-note"),
+  trendCloud: document.getElementById("trend-cloud"),
+  trendCloudNote: document.getElementById("trend-cloud-note"),
   zoneStatsBody: document.getElementById("zone-stats-body"),
 };
 
@@ -137,11 +141,15 @@ function formatNumber(value, digits = 1) {
   return value.toLocaleString("es-ES", { maximumFractionDigits: digits });
 }
 
-function average(passes, field) {
-  if (passes.length === 0) {
+function calcularMedia(values) {
+  if (values.length === 0) {
     return null;
   }
-  return passes.reduce((sum, pass) => sum + pass[field], 0) / passes.length;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function average(passes, field) {
+  return calcularMedia(passes.map((pass) => pass[field]));
 }
 
 function getLocationField(passes) {
@@ -153,13 +161,6 @@ function getLocationField(passes) {
 function formatLocation(pass) {
   const location = state.zoneField ? pass[state.zoneField] : null;
   return typeof location === "string" && location.trim() ? location : "No incluida en el JSON";
-}
-
-function formatPassSummary(pass, field) {
-  if (!pass) {
-    return "—";
-  }
-  return `${pass.fecha} · ${formatLocation(pass)} · ${pass.id} (${formatPercent(pass[field])})`;
 }
 
 function renderKpis(passes) {
@@ -186,7 +187,7 @@ function renderKpis(passes) {
   elements.kpiBestHint.textContent = `ID ${bestPass.id} · mayor aptitud (${formatPercent(bestPass.aptitud_sensor_pct)})`;
 }
 
-function median(values) {
+function calcularMediana(values) {
   if (values.length === 0) {
     return null;
   }
@@ -197,21 +198,29 @@ function median(values) {
     : sorted[middle];
 }
 
+function desviacionEstandar(values) {
+  if (values.length === 0) {
+    return null;
+  }
+  const mean = calcularMedia(values);
+  const variance = values.reduce((sum, value) => sum + ((value - mean) ** 2), 0) / values.length;
+  return Math.sqrt(variance);
+}
+
 function describe(values) {
   if (values.length === 0) {
     return null;
   }
   const total = values.length;
-  const mean = values.reduce((sum, value) => sum + value, 0) / total;
+  const mean = calcularMedia(values);
   const minimum = Math.min(...values);
   const maximum = Math.max(...values);
-  const variance = values.reduce((sum, value) => sum + ((value - mean) ** 2), 0) / total;
   return {
     mean,
-    median: median(values),
+    median: calcularMediana(values),
     minimum,
     maximum,
-    standardDeviation: Math.sqrt(variance),
+    standardDeviation: desviacionEstandar(values),
     range: maximum - minimum,
     total,
   };
@@ -625,7 +634,7 @@ function createDistributionChart(counts, total) {
   }
 }
 
-function pearsonCorrelation(passes) {
+function correlacionPearson(passes) {
   if (passes.length < 2) {
     return null;
   }
@@ -653,8 +662,11 @@ function correlationInterpretation(value) {
   if (!Number.isFinite(value)) {
     return "No calculable con menos de dos datos o sin variación.";
   }
+  if (value > 0) {
+    return "Correlación positiva (atípica, revisar datos).";
+  }
   if (value < -0.7) {
-    return "Correlación fuerte negativa.";
+    return "Correlación fuerte negativa: a mayor nubosidad, menor aptitud.";
   }
   if (value <= -0.3) {
     return "Correlación moderada negativa.";
@@ -688,17 +700,45 @@ function renderExtremes(passes) {
   const cloudiest = passes.reduce((current, pass) => (
     pass.nubosidad_pct > current.nubosidad_pct ? pass : current
   ));
-  elements.extremeBest.textContent = formatPassSummary(best, "aptitud_sensor_pct");
-  elements.extremeWorst.textContent = formatPassSummary(worst, "aptitud_sensor_pct");
-  elements.extremeCloud.textContent = formatPassSummary(cloudiest, "nubosidad_pct");
+  elements.extremeBest.textContent = formatPassDetails(best);
+  elements.extremeWorst.textContent = formatPassDetails(worst);
+  elements.extremeCloud.textContent = formatPassDetails(cloudiest);
 }
 
 function renderCorrelation(passes) {
-  const value = pearsonCorrelation(passes);
+  const value = correlacionPearson(passes);
   elements.correlationValue.textContent = Number.isFinite(value)
     ? `r = ${value.toFixed(2)}`
     : "r = —";
   elements.correlationDescription.textContent = correlationInterpretation(value);
+}
+
+function formatPassDetails(pass) {
+  return `${pass.fecha} · ${formatLocation(pass)} · Nubosidad ${formatPercent(pass.nubosidad_pct)} · Aptitud ${formatPercent(pass.aptitud_sensor_pct)} · ID ${pass.id}`;
+}
+
+function describeTrend(first, last, field, label) {
+  const difference = last[field] - first[field];
+  const direction = difference > 0 ? "subió" : difference < 0 ? "bajó" : "se mantuvo";
+  return `${label} ${direction} ${formatNumber(Math.abs(difference))} puntos entre ${first.fecha} y ${last.fecha}.`;
+}
+
+function renderTrend(passes) {
+  if (passes.length === 0) {
+    elements.trendFitness.textContent = "—";
+    elements.trendFitnessNote.textContent = "Sin datos para el filtro.";
+    elements.trendCloud.textContent = "—";
+    elements.trendCloudNote.textContent = "Sin datos para el filtro.";
+    return;
+  }
+
+  const ordered = [...passes].sort((first, second) => first.fecha.localeCompare(second.fecha));
+  const first = ordered[0];
+  const last = ordered[ordered.length - 1];
+  elements.trendFitness.textContent = describeTrend(first, last, "aptitud_sensor_pct", "Aptitud");
+  elements.trendFitnessNote.textContent = `De ${formatPercent(first.aptitud_sensor_pct)} a ${formatPercent(last.aptitud_sensor_pct)}.`;
+  elements.trendCloud.textContent = describeTrend(first, last, "nubosidad_pct", "Nubosidad");
+  elements.trendCloudNote.textContent = `De ${formatPercent(first.nubosidad_pct)} a ${formatPercent(last.nubosidad_pct)}.`;
 }
 
 function renderZoneStats(passes) {
@@ -706,7 +746,7 @@ function renderZoneStats(passes) {
   if (!state.zoneField) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
-    cell.colSpan = 4;
+    cell.colSpan = 5;
     cell.className = "table-empty";
     cell.textContent = "El JSON no contiene isla/zona; no se inventan ubicaciones.";
     row.append(cell);
@@ -732,7 +772,7 @@ function renderZoneStats(passes) {
   if (sortedGroups.length === 0) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
-    cell.colSpan = 4;
+    cell.colSpan = 5;
     cell.className = "table-empty";
     cell.textContent = "Sin zonas para el filtro seleccionado.";
     row.append(cell);
@@ -743,9 +783,11 @@ function renderZoneStats(passes) {
   for (const [location, records] of sortedGroups) {
     const row = document.createElement("tr");
     appendCell(row, location);
+    appendCell(row, records.length.toLocaleString("es-ES"));
     appendCell(row, formatPercent(average(records, "nubosidad_pct")));
     appendCell(row, formatPercent(average(records, "aptitud_sensor_pct")));
-    appendCell(row, records.length.toLocaleString("es-ES"));
+    const suitableCount = records.filter((pass) => pass.aptitud_sensor_pct >= SUITABILITY_THRESHOLD).length;
+    appendCell(row, formatPercent((suitableCount / records.length) * 100));
     elements.zoneStatsBody.append(row);
   }
 }
@@ -755,6 +797,7 @@ function renderStatistics(passes) {
   renderDistribution(passes);
   renderCorrelation(passes);
   renderExtremes(passes);
+  renderTrend(passes);
   renderZoneStats(passes);
 }
 
