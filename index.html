@@ -3,13 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Dashboard académico PlasTrack con pasadas satelitales simuladas sobre las islas Galápagos.">
-    <title>PlasTrack | Pasadas satelitales</title>
+    <meta name="description" content="PlasTrack: dashboard académico con datos simulados sobre Galápagos.">
+    <title>PlasTrack - Galápagos</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="styles.css">
-    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script defer src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
     <script defer src="app.js"></script>
   </head>
   <body>
@@ -18,54 +15,91 @@
         <span class="brand-mark" aria-hidden="true">P</span>
         <span>PlasTrack</span>
       </a>
-      <p class="header-note">Explorador académico · Islas Galápagos</p>
+      <span class="simulation-badge">DATOS SIMULADOS - FINES ACADÉMICOS</span>
     </header>
 
     <main class="dashboard">
       <section class="intro" aria-labelledby="page-title">
         <div>
-          <p class="eyebrow">Monitoreo satelital</p>
-          <h1 id="page-title">Pasadas sobre Galápagos</h1>
-          <p class="intro-copy">Consulta la nubosidad y la aptitud del sensor en cada pasada.</p>
+          <p class="eyebrow">Monitoreo satelital · Islas Galápagos</p>
+          <h1 id="page-title">PlasTrack - Galápagos</h1>
+          <p class="intro-copy" id="dataset-summary">Cargando pasadas satelitales simuladas tipo Copernicus sobre Galápagos…</p>
         </div>
-        <p class="simulation-badge"><span aria-hidden="true">●</span> Datos simulados, no son observaciones reales</p>
+        <p class="dataset-updated" id="dataset-updated">Fecha del dataset: —</p>
       </section>
 
       <div id="data-error" class="data-error" role="alert" hidden></div>
+      <div id="filter-error" class="data-error filter-error" role="alert" hidden></div>
 
-      <section class="kpi-grid" aria-label="Indicadores principales">
-        <article class="kpi-card">
-          <p class="kpi-label">Pasadas registradas</p>
-          <p class="kpi-value" id="kpi-total" aria-live="polite">—</p>
-          <p class="kpi-hint">Registros cargados</p>
-        </article>
+      <section class="kpi-grid" aria-label="Indicadores calculados desde los datos filtrados">
         <article class="kpi-card">
           <p class="kpi-label">Nubosidad promedio</p>
           <p class="kpi-value" id="kpi-cloud" aria-live="polite">—</p>
-          <p class="kpi-hint">Porcentaje por pasada</p>
+          <p class="kpi-hint">Fórmula: suma de nubosidad / pasadas filtradas</p>
         </article>
         <article class="kpi-card">
           <p class="kpi-label">Aptitud promedio</p>
-          <p class="kpi-value" id="kpi-suitability" aria-live="polite">—</p>
-          <p class="kpi-hint">Aptitud del sensor</p>
+          <p class="kpi-value" id="kpi-fitness" aria-live="polite">—</p>
+          <p class="kpi-hint">Fórmula: suma de aptitud / pasadas filtradas</p>
         </article>
-        <article class="kpi-card kpi-card-highlight">
+        <article class="kpi-card">
           <p class="kpi-label">Pasadas aptas</p>
           <p class="kpi-value" id="kpi-suitable" aria-live="polite">—</p>
-          <p class="kpi-hint">Umbral: aptitud ≥ 70 %</p>
+          <p class="kpi-hint">Conteo con aptitud ≥ 70 %</p>
+        </article>
+        <article class="kpi-card">
+          <p class="kpi-label">Total pasadas</p>
+          <p class="kpi-value" id="kpi-total" aria-live="polite">—</p>
+          <p class="kpi-hint">Conteo de registros filtrados</p>
+        </article>
+        <article class="kpi-card kpi-card-highlight">
+          <p class="kpi-label">Mejor pasada</p>
+          <p class="kpi-value kpi-best-value" id="kpi-best" aria-live="polite">—</p>
+          <p class="kpi-hint" id="kpi-best-hint">Mayor aptitud del sensor</p>
         </article>
       </section>
 
-      <section class="content-grid" aria-label="Visualizaciones de pasadas">
+      <section class="panel filters-panel" aria-labelledby="filters-title">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">Exploración</p>
+            <h2 id="filters-title">Filtros</h2>
+          </div>
+          <p class="threshold-note">Pasada apta: aptitud del sensor ≥ 70 %</p>
+        </div>
+        <form id="filter-form" class="filter-form">
+          <label>
+            Desde
+            <input id="date-from" type="text" inputmode="numeric" placeholder="AAAA-MM-DD" autocomplete="off">
+          </label>
+          <label>
+            Hasta
+            <input id="date-to" type="text" inputmode="numeric" placeholder="AAAA-MM-DD" autocomplete="off">
+          </label>
+          <label class="zone-filter-label">
+            Isla / Zona
+            <select id="zone-filter">
+              <option value="">Cargando zonas…</option>
+            </select>
+          </label>
+          <div class="filter-actions">
+            <button class="button button-primary" type="submit">Filtrar</button>
+            <button class="button button-secondary" id="reset-filters" type="button">Restablecer</button>
+          </div>
+        </form>
+        <p class="filter-help">Las fechas deben ser reales y usar el formato AAAA-MM-DD. La zona se habilita si existe en el JSON.</p>
+      </section>
+
+      <section class="content-grid" aria-label="Mapa y gráficos">
         <article class="panel map-panel">
           <div class="panel-heading">
             <div>
               <p class="eyebrow">Distribución geográfica</p>
-              <h2>Mapa de pasadas</h2>
+              <h2>Pasadas sobre Galápagos</h2>
             </div>
-            <span class="panel-meta">Haz clic en un punto para ver sus datos</span>
+            <label class="heat-toggle"><input id="heat-toggle" type="checkbox" checked> Mostrar calor</label>
           </div>
-          <div id="map" class="map" role="region" aria-label="Mapa interactivo con imágenes satelitales de las islas Galápagos y pasadas simuladas">
+          <div id="map" class="map" role="region" aria-label="Mapa de Galápagos con pasadas satelitales simuladas">
             <div class="map-context" aria-hidden="true">
               <span class="map-context-dot"></span>
               <span><strong>Islas Galápagos</strong><small>Océano Pacífico · Ecuador</small></span>
@@ -73,28 +107,70 @@
           </div>
           <div class="map-legend" aria-label="Leyenda del mapa">
             <span><i class="legend-dot legend-good"></i>Aptitud ≥ 70 %</span>
-            <span><i class="legend-dot legend-low"></i>Aptitud &lt; 70 %</span>
-            <span><i class="legend-gradient"></i>Densidad de pasadas</span>
+            <span><i class="legend-dot legend-mid"></i>Aptitud 40–69 %</span>
+            <span><i class="legend-dot legend-low"></i>Aptitud &lt; 40 %</span>
+            <span><i class="legend-gradient"></i>Calor ponderado por aptitud simulada</span>
           </div>
         </article>
 
-        <article class="panel chart-panel">
-          <div class="panel-heading">
-            <div>
-              <p class="eyebrow">Calidad por fecha</p>
-              <h2>Nubosidad y aptitud</h2>
+        <section class="charts-grid" aria-label="Tendencias por fecha">
+          <article class="panel chart-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Tendencia</p>
+                <h2>Nubosidad por fecha</h2>
+              </div>
             </div>
+            <div class="chart-wrap">
+              <canvas id="chart-cloud" role="img" aria-label="Gráfico de línea de nubosidad por fecha"></canvas>
+              <p id="chart-cloud-empty" class="chart-empty" hidden>Sin datos para el filtro seleccionado.</p>
+            </div>
+          </article>
+          <article class="panel chart-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Tendencia</p>
+                <h2>Aptitud por fecha</h2>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chart-fitness" role="img" aria-label="Gráfico de línea de aptitud por fecha"></canvas>
+              <p id="chart-fitness-empty" class="chart-empty" hidden>Sin datos para el filtro seleccionado.</p>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <section class="panel table-panel" aria-labelledby="table-title">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Registros del archivo</p>
+            <h2 id="table-title">Tabla de pasadas</h2>
           </div>
-          <p class="chart-description">Porcentaje de nubosidad y aptitud del sensor en cada pasada.</p>
-          <div class="chart-wrap">
-            <canvas id="passes-chart" role="img" aria-label="Gráfico de líneas de nubosidad y aptitud del sensor por fecha"></canvas>
-          </div>
-        </article>
+          <span class="panel-meta">La tabla sigue los filtros aplicados</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Isla / Zona</th>
+                <th scope="col">Nubosidad</th>
+                <th scope="col">Aptitud</th>
+                <th scope="col">Estado</th>
+                <th scope="col">ID pasada</th>
+              </tr>
+            </thead>
+            <tbody id="passes-table-body">
+              <tr><td class="table-empty" colspan="6">Cargando datos…</td></tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <footer class="page-footer">
-        <span>PlasTrack · Proyecto académico</span>
-        <span>Los datos de demostración son sintéticos y no describen mediciones reales.</span>
+        <span>PlasTrack · Proyecto académico · DATOS SIMULADOS</span>
+        <span>Los indicadores y la capa de calor no son observaciones satelitales reales.</span>
       </footer>
     </main>
   </body>

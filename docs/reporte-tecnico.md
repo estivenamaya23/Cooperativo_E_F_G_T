@@ -1,66 +1,60 @@
-# Benchmarking de herramientas BI para el prototipo PlasTrack
+# PlasTrack: benchmarking y decisión de visualización
 
-**Actividad Cooperativa — Unidad 1: benchmarking de herramientas de BI y prototipado del dashboard PlasTrack con IA**
-**Universidad Técnica de Cotopaxi**
+## Alcance y datos inspeccionados
 
-## Resumen
+Este es un prototipo académico, estático y sin backend. **DATOS SIMULADOS - FINES ACADÉMICOS:** los valores no son observaciones satelitales reales ni productos oficiales de Copernicus.
 
-Este trabajo compara Power BI, Looker Studio y una implementación web con JavaScript (Leaflet.js y Chart.js) para el caso académico PlasTrack: visualizar pasadas satelitales simuladas sobre Galápagos. La comparación considera integración de datos JSON/CSV, capacidades geográficas, gráficos, facilidad de uso, publicación/rendimiento web y costos/licencias. Se eligió JavaScript porque el requisito es un sitio estático, sin backend, que lea un JSON junto al proyecto y permita personalizar un mapa interactivo. El prototipo se publica en GitHub Pages y presenta KPI, marcadores, densidad espacial y tendencias. Sus 15 registros son sintéticos; no representan mediciones de Copernicus ni sostienen conclusiones ambientales.
+Se inspeccionó `data_copernicus_sample.json`: tiene 15 registros con los campos `id`, `fecha`, `satelite`, `latitud`, `longitud`, `nubosidad_pct` y `aptitud_sensor_pct`. No contiene `isla` ni `zona`; no se asignaron nombres de islas ficticios. El filtro geográfico queda inactivo y los campos de presentación indican que esa dimensión no está en la fuente.
 
-**Palabras clave:** inteligencia de negocios, visualización geográfica, Leaflet, Chart.js, GitHub Pages, datos sintéticos.
+## Matriz comparativa
 
-## 1. Introducción
-
-Las herramientas de BI y las bibliotecas web resuelven necesidades parcialmente distintas. Una plataforma BI facilita la creación de informes visuales y su conexión con fuentes; una biblioteca web ofrece más control sobre la interfaz y el comportamiento, pero requiere implementar y mantener el código. Para seleccionar una alternativa útil al prototipo, se compararon las capacidades documentadas por sus proveedores y su ajuste al requisito concreto: cargar un arreglo JSON con coordenadas, calcular indicadores y publicar HTML, CSS y JavaScript como sitio estático.
-
-## 2. Metodología
-
-Se realizó una comparación cualitativa de documentación oficial de Microsoft, Google, Leaflet, Chart.js, GitHub y Esri (referencias al final). Los criterios fueron: (1) facilidad de uso y mantenimiento; (2) manejo de JSON/CSV; (3) mapas y geoespacial; (4) gráficos; (5) arquitectura y dependencias que inciden en el rendimiento web; (6) licenciamiento, precios y condiciones de uso; y (7) ajuste al alcance de PlasTrack.
-
-No se ejecutó una prueba de rendimiento entre productos ni se compararon planes pagados con configuraciones equivalentes. Por ello, las apreciaciones de rendimiento y costos son cualitativas; cualquier decisión de compra requiere consultar precios, licencias, límites y términos vigentes de cada proveedor. El análisis no declara una herramienta universalmente superior.
-
-## 3. Comparación de alternativas
-
-| Criterio | Power BI | Looker Studio | JavaScript: Leaflet.js + Chart.js |
+| Criterio | Power BI | Looker Studio / Data Studio | Leaflet.js + Chart.js |
 |---|---|---|---|
-| Facilidad de uso | Entorno visual con modelado y creación de informes. Puede requerir aprendizaje de Power Query, modelo semántico y administración. | Editor visual para crear y compartir informes; el usuario configura fuentes, dimensiones, métricas y visualizaciones. | Requiere conocimientos de HTML, CSS y JavaScript. No tiene editor visual, pero permite adaptar cada elemento de la aplicación. |
-| JSON/CSV | Power Query documenta un conector JSON y opciones para conectarse a fuentes de datos. La forma del JSON puede requerir transformación y modelado antes de su uso. | Se conecta mediante conectores y fuentes disponibles en el producto. La conexión al JSON específico puede requerir un conector compatible, preparación o conversión. | `fetch` carga directamente el archivo JSON estático del proyecto. Para CSV se tendría que incorporar un analizador o transformar el archivo. |
-| Mapas y geoespacial | Incluye visuales de mapa y campos de ubicación/coordenadas. Algunos visuales usan servicios de geocodificación; hay que revisar tratamiento de datos y configuración organizacional. | Ofrece Geo charts que relacionan dimensión geográfica y métrica, con áreas de zoom configurables; su forma de representación está definida por el producto. | Leaflet permite capas, marcadores, popups, controles y mapas base. Leaflet.heat agrega una capa de densidad configurable sobre coordenadas. |
-| Gráficos | Catálogo de visualizaciones integradas y personalizadas según el producto y la configuración. | Gráficos configurables desde el editor, sujetos a los tipos de campos y conectores disponibles. | Chart.js genera gráficos en el navegador; PlasTrack utiliza un gráfico de líneas con nubosidad y aptitud por fecha. |
-| Publicación y rendimiento | El informe se consume mediante el servicio correspondiente. El rendimiento depende del modelo, consultas, visuales, capacidad y red. | El informe se comparte desde el servicio; el rendimiento depende de la fuente, conectores, informe y red. | GitHub Pages sirve archivos estáticos directamente. No requiere servidor de aplicación ni compilación; el navegador descarga los archivos, las bibliotecas CDN y los mosaicos externos. El rendimiento depende del tamaño de datos, dispositivo y servicios externos. |
-| Costos, licencias y términos | Consultar los planes y condiciones de Microsoft según el uso. También revisar los requisitos de capacidad y la documentación de mapas/geocodificación. No se asigna un precio en este informe. | La documentación del producto describe la herramienta estándar como gratuita; revisar la oferta vigente, funciones Pro, conectores, cuotas y términos aplicables. No se asigna un precio. | Verificar licencias de las bibliotecas y términos de uso de CDN y proveedor del mapa. GitHub Pages tiene límites y condiciones propios. No se estiman costos de infraestructura o servicio externo. |
-| Ajuste al caso | Alternativa pertinente para informes de BI y modelos de datos; implica configurar un proyecto dentro del entorno Power BI para este dashboard estático. | Alternativa pertinente para informes compartibles; el mapa y la conexión al JSON específico deben resolverse con las fuentes/conectores del producto. | Ajuste directo al prototipo: consume el JSON del repositorio, personaliza mapa y gráfico y publica los archivos estáticos juntos. Requiere mantenimiento del código. |
+| **Capas geoespaciales / calor** | Azure Maps acepta campos de latitud y longitud y dispone de visualización de mapas. La documentación consultada describe puntos/burbujas; el soporte nativo específico para una capa heatmap en la configuración considerada: **no verificado**. Con 15 puntos el conjunto es pequeño; rendimiento a 10.000: **no verificado**. | Geo charts requieren una dimensión geográfica y métrica y muestran regiones o marcadores. Un heatmap de densidad de puntos arbitrarios: **no verificado** en la documentación consultada. El límite publicado para Geo charts es 5.000 filas; 10.000 registros requieren filtrar/agregar o usar otra visualización. | Leaflet muestra mapa interactivo y marcadores; la capa de calor se obtiene mediante Leaflet.heat, plugin separado. Los puntos se asignan explícitamente desde latitud/longitud. El plugin recibe 15 puntos sin problema conocido en esta muestra; capacidad y rendimiento a 10.000: **no verificado** mediante prueba. |
+| **Integración Copernicus JSON / CSV** | Power BI Desktop: **Obtener datos → JSON**, seleccionar archivo; Power Query detecta y aplana tablas, y se puede transformar y cargar. Para una URL JSON documentada, Power Query indica usar el conector Web. No equivale por sí mismo a una integración autenticada con API de Copernicus; API específica, credenciales y actualización: **no verificado**. CSV puede importarse por conectores documentados. | El conector oficial documentado permite subir CSV a un dataset, tras iniciar sesión y crear una fuente. La carga CSV se documenta como gratuita y sus datasets se almacenan en Cloud Storage; la característica puede estar en despliegue gradual. Importar directamente este JSON local o una API Copernicus desde conectores estándar: **no verificado**. Conversión JSON→CSV o conector compatible sería necesaria si no hay fuente adecuada. | `fetch("data_copernicus_sample.json")` carga directamente el archivo local al sitio; sin conversión ni API. CSV requeriría agregar parser o convertirlo. Para correr localmente debe servirse por HTTP y no abrirse como `file://`. |
+| **Costos de licenciamiento** | **Freemium**, según página oficial: cuenta gratuita para crear; compartir/publicar reportes puede requerir Pro o Premium según el escenario. No se incluyen precios. Costos/condiciones de Azure Maps o uso a escala: **no verificado** para este caso. | **Gratuito** según documentación oficial de Data Studio y de la carga CSV. Requiere iniciar sesión para crear la fuente CSV. Costos, límites y permisos de compartir para cada audiencia: verificar planes/condiciones vigentes; no se presuponen. | Librerías abiertas: Leaflet BSD-2-Clause, Leaflet.heat BSD-2-Clause y Chart.js MIT (licencias comprobadas en repositorios oficiales). El CDN no tiene costo o límite de servicio aquí verificado. Datos OSM abiertos no significan que los servidores públicos de teselas sean ilimitados: servicio best-effort y capacidad limitada. GitHub Pages, su elegibilidad y límites deben revisarse según condiciones vigentes; no se atribuye costo cero a servicios externos sin verificación. |
+| **Usabilidad / curva de aprendizaje** | Editor drag-and-drop para visuales; importación, modelado y actualización de fuentes requieren familiarizarse con Power Query y el modelo. Tiempo para MVP: **no verificado**; depende de la experiencia y la fuente. | Editor visual drag-and-drop y configuración de conectores, dimensiones y métricas. La importación CSV añade pasos; acceso requiere inicio de sesión para crear la fuente. Tiempo para MVP: **no verificado**. | Requiere HTML, CSS y JavaScript; ofrece control fino de interfaz, filtros y capas. Tiempo para MVP: **no verificado**, pues depende del equipo. |
+| **Rendimiento web / peso / carga** | Servicio y visualizaciones dependen de infraestructura y configuración de Power BI/Azure. Comparación controlada o peso del producto para este dataset: **no verificado**. Los mapas usan recursos remotos. | Se procesa/visualiza desde el servicio, según fuente y consulta. Comparación controlada o peso del producto: **no verificado**. Carga CSV documentada almacena datasets en Cloud Storage. | Se midió el tamaño descargado con `curl --compressed` el 16-11-2026: Leaflet JS 42.385 B + CSS 3.522 B, Leaflet.heat 2.088 B y Chart.js 60.354 B, total aproximado **108.349 B** para esos cuatro recursos, sin HTML, JSON ni teselas. Es una medición puntual de transferencia, no de tiempo de carga ni rendimiento comparativo. CDN y teselas requieren red. 10.000 puntos y dispositivos distintos: **no verificado**. |
+| **Personalización / control del código** | Personalización visual mediante campos, panel de formato y visuales; control detallado de la aplicación queda en la plataforma. | Personalización visual y campos calculados desde el editor; control sujeto a tipos de visual y conectores disponibles. | HTML/CSS/JS editables; control directo de colores, tooltip, interacciones, filtros y lógica. El mantenimiento del código recae en el equipo. |
+| **Trabajo offline / sin cuenta** | Power BI Desktop puede trabajar con archivos locales, pero publicación y mapas online dependen de servicios. Flujo completo sin cuenta/red: **no verificado**. | Crear fuentes CSV requiere iniciar sesión. Trabajo offline y requisitos de cuenta para visualizar/compartir en cada escenario: **no verificado**. | El JSON queda en el sitio, pero la configuración actual carga bibliotecas de CDN y teselas OSM externas: no funciona completamente offline. Se podría valorar autohospedar recursos/mapas, sujeto a licencias y alcance, no implementado. |
+| **Despliegue / compartir** | Compartir reportes desde Power BI depende del método de publicación, licencias y audiencia; compartir sin licencias: consultar requisitos vigentes. No es una publicación directa del HTML/JSON en GitHub Pages. | Compartir se realiza desde el servicio mediante permisos/fuentes. Exportar el reporte como aplicación estática propia: no verificado. | Archivos estáticos pueden servirse desde GitHub Pages, que admite HTML/CSS/JS del repositorio. La URL del repositorio respondió HTTP 200 al revisarse el 16-11-2026 antes de estos cambios; la versión actual no se ha publicado. Settings/Actions y disponibilidad posterior: no verificados. |
 
-## 4. Selección y arquitectura del prototipo
+### Fuentes oficiales consultadas
 
-Se seleccionó JavaScript con Leaflet.js y Chart.js por el ajuste al alcance, no por una comparación de velocidad medida. La aplicación carga `data_copernicus_sample.json` mediante una ruta relativa. `app.js` valida estructura y rangos, calcula las tarjetas y genera las visualizaciones desde los registros. Leaflet muestra los puntos y ventanas emergentes, y Leaflet.heat representa la concentración espacial de registros; Chart.js grafica nubosidad y aptitud por fecha. El sitio funciona sin backend ni paso de compilación y está publicado en GitHub Pages.
+- Microsoft Power Query, conector JSON: <https://learn.microsoft.com/en-us/power-query/connectors/json>
+- Microsoft Azure Maps para Power BI, inicio, datos de latitud/longitud y visual: <https://learn.microsoft.com/en-us/azure/azure-maps/power-bi-visual-get-started>
+- Microsoft, planes Power BI: <https://www.microsoft.com/en-us/microsoft-fabric/features/power-bi/pricing>
+- Google Data Studio, documentación del producto y descripción no-cost: <https://docs.cloud.google.com/data-studio/>
+- Google Data Studio, carga CSV, pasos, almacenamiento y despliegue gradual: <https://docs.cloud.google.com/data-studio/upload-csv-files>
+- Google Data Studio, Geo charts, dimensión geográfica y límite de filas: <https://docs.cloud.google.com/data-studio/geo-chart-reference>
+- Leaflet: <https://leafletjs.com/> · licencia BSD-2-Clause: <https://raw.githubusercontent.com/Leaflet/Leaflet/main/LICENSE>
+- Leaflet.heat: <https://github.com/Leaflet/Leaflet.heat> · licencia BSD-2-Clause: <https://raw.githubusercontent.com/Leaflet/Leaflet.heat/main/LICENSE>
+- Chart.js: <https://www.chartjs.org/docs/latest/> · licencia MIT: <https://github.com/chartjs/Chart.js/blob/master/LICENSE.md>
+- GitHub Pages: <https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages>
+- Política oficial de teselas OSM: <https://operations.osmfoundation.org/policies/tiles/>
+- Licencia y atribución OSM: <https://www.openstreetmap.org/copyright>
 
-La muestra contiene 15 registros entre el 1 y el 29 de octubre de 2026. Para los valores actuales, el prototipo calcula 28,5 % de nubosidad promedio, 77,6 % de aptitud promedio y 11 pasadas con aptitud igual o superior al umbral definido de 70 %. Son resultados aritméticos de datos sintéticos, no indicadores observados en Galápagos.
+Fuentes consultadas el 16 de noviembre de 2026. Si un producto, plan o proveedor cambia, las características y condiciones deben volver a verificarse. Las estimaciones de tiempo, comparaciones de rendimiento y escalabilidad no medidas se marcan como **no verificado**.
 
-## 5. Limitaciones y consideraciones
+## Decisión para este proyecto
 
-- Los datos de muestra son ficticios. El prototipo no constituye un producto oficial de Copernicus ni un sistema de monitoreo operativo.
-- La capa de calor visualiza la distribución de registros; no equivale a contaminación, nubosidad ni intensidad física medida.
-- El mapa base, las etiquetas y las bibliotecas se obtienen de servicios externos. Su disponibilidad y términos pueden cambiar; se debe respetar la atribución y las condiciones del proveedor.
-- El rendimiento no se midió en dispositivos o redes comparables. No se debe inferir superioridad de rendimiento frente a las plataformas BI.
-- Antes de reemplazar la muestra, el equipo debe validar la procedencia, esquema, unidades, calidad y permiso de publicación de los datos oficiales.
+Se elige **Leaflet.js + Chart.js** para este caso de 15 pasadas simuladas, dataset JSON local, presupuesto no especificado y destino estático.
+1. `fetch()` consume el archivo que ya existe sin convertirlo a CSV ni llevarlo a un servicio BI.
+2. Leaflet dibuja coordenadas y permite popups; Leaflet.heat aporta la capa de calor requerida con un toggle.
+3. Chart.js permite separar las tendencias de nubosidad y aptitud y actualizarlas al cambiar el rango de fechas.
+4. HTML/CSS/JS se publican junto al JSON en GitHub Pages, sin backend ni paso de compilación.
+5. El equipo conserva el control del código y no tiene que modelar una fuente en una plataforma externa para este prototipo.
+6. La contrapartida es mantener el código y depender de CDN y teselas externas.
 
-## 6. Conclusión
+La decisión no significa que sea superior en general. No se incorporan campos `isla`/`zona`, porque la fuente inspeccionada no los tiene. Mejor pasada se expresa con fecha e ID; el lugar se indica como no incluido.
 
-Para un dashboard de demostración con un conjunto pequeño y local de registros JSON, Leaflet y Chart.js permiten una experiencia geográfica y gráfica personalizada con despliegue estático. Power BI y Looker Studio ofrecen alternativas adecuadas cuando se priorizan sus flujos visuales de BI, conectores y colaboración. La elección depende del contexto, mantenimiento, capacidades requeridas, tratamiento de datos y condiciones vigentes; las fuentes oficiales deben revisarse antes de una adopción distinta.
+## Verificación de ejecución
 
-## Referencias
+Desde la raíz del repositorio:
 
-Fuentes oficiales consultadas el 12 de noviembre de 2026:
+```bash
+python3 -m json.tool data_copernicus_sample.json
+python3 -m http.server 8000
+```
 
-1. Microsoft Learn. *Data sources in Power BI Desktop*. <https://learn.microsoft.com/en-us/power-bi/connect-data/desktop-data-sources>
-2. Microsoft Learn. *Power Query JSON connector*. <https://learn.microsoft.com/en-us/power-query/connectors/json>
-3. Microsoft Learn. *Tips and Tricks for maps (including Bing Maps integration)*. <https://learn.microsoft.com/en-us/power-bi/visuals/power-bi-map-tips-and-tricks>
-4. Google. *Geo chart reference — Looker Studio*. <https://docs.cloud.google.com/data-studio/geo-chart-reference>
-5. Google. *Data Studio documentation*. <https://docs.cloud.google.com/data-studio/>
-6. Leaflet. *Leaflet documentation and API reference*. <https://leafletjs.com/> · <https://leafletjs.com/reference.html>
-7. Chart.js. *Documentation*. <https://www.chartjs.org/docs/latest/>
-8. GitHub Docs. *What is GitHub Pages?* <https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages>
-9. Esri. *Master Agreements; Products and Services Terms of Use*. <https://www.esri.com/en-us/legal/terms/master-agreement>
-
-Los precios, disponibilidad de planes, requisitos de publicación, licencias y términos están sujetos a cambios. Verificar las páginas vigentes del proveedor antes de su uso.
+Abrir <http://localhost:8000>. Comprobaciones ejecutadas para esta entrega: `node --check app.js`, parseo JSON, validación automatizada de fechas límite y prueba de mensajes para JSON 404/inválido/vacío y CDN ausente. La interacción visual en navegador real y pruebas a 360 px / 1280 px: **no verificado** en este entorno.

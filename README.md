@@ -1,57 +1,41 @@
-# PlasTrack
+# PlasTrack - Galápagos
 
-Dashboard web estático para explorar 15 pasadas satelitales **simuladas** sobre las islas Galápagos. Los valores incluidos son únicamente de ejemplo: no representan observaciones satelitales reales ni productos oficiales de Copernicus.
+Dashboard web estático para explorar 15 pasadas satelitales simuladas tipo Copernicus sobre Galápagos.
 
-**Sitio publicado:** [https://estivenamaya23.github.io/Cooperativo_E_F_G_T/](https://estivenamaya23.github.io/Cooperativo_E_F_G_T/)
+> **DATOS SIMULADOS - FINES ACADÉMICOS.** El JSON incluido es sintético; no contiene observaciones satelitales reales ni productos oficiales de Copernicus.
 
-## Abrir el dashboard en tu computadora
+## Abrir localmente
 
-1. Descarga o clona este repositorio.
-2. Desde la carpeta del proyecto, inicia un servidor estático local:
+Desde la raíz del repositorio:
 
-   ```bash
-   python3 -m http.server 8000
-   ```
-
-3. Abre <http://localhost:8000> en tu navegador.
-
-No hay backend ni pasos de compilación. Se necesita conexión a internet para descargar Leaflet, Leaflet.heat, Chart.js y los mosaicos del mapa desde sus CDN/proveedores. Si abres `index.html` directamente como archivo, el navegador puede bloquear la carga del JSON; usa el servidor estático indicado.
-
-## Datos
-
-El dashboard carga `data_copernicus_sample.json` mediante una ruta relativa. Cada registro debe tener esta estructura:
-
-```json
-{
-  "id": "P01",
-  "fecha": "2026-10-01",
-  "satelite": "Sentinel-2A",
-  "latitud": -0.72,
-  "longitud": -90.31,
-  "nubosidad_pct": 12,
-  "aptitud_sensor_pct": 91
-}
+```bash
+python3 -m json.tool data_copernicus_sample.json
+python3 -m http.server 8000
 ```
 
-Para reemplazar la muestra simulada por el archivo oficial de la clase:
+Abre <http://localhost:8000>. Se requiere conexión a internet para descargar Leaflet, Leaflet.heat, Chart.js y los mosaicos del mapa base de OpenStreetMap. Abrir `index.html` directamente como archivo puede bloquear `fetch()` del JSON.
 
-1. Conserva una copia de la muestra, si la necesitas.
-2. Reemplaza el contenido de `data_copernicus_sample.json` por el JSON oficial. Debe ser un arreglo de registros con los campos y tipos indicados arriba; la fecha debe usar `AAAA-MM-DD` y los porcentajes deben ser números entre 0 y 100.
-3. No incluyas credenciales, tokens ni datos que no deban publicarse en un repositorio público.
-4. Recarga el dashboard. Las tarjetas, los marcadores, la capa de calor y el gráfico se calculan a partir del contenido cargado.
+## Datos que usa el dashboard
 
-El umbral de pasada apta es una aptitud del sensor de **70 % o más**.
+Se verificaron los campos del archivo: `id`, `fecha`, `satelite`, `latitud`, `longitud`, `nubosidad_pct` y `aptitud_sensor_pct`. **No hay campos `isla` ni `zona`**; por ello, el filtro Isla/Zona queda desactivado, y las ubicaciones se muestran como “No incluida en el JSON”. No se inventan localizaciones.
 
-## Publicación en GitHub Pages
+Los KPI, la tabla, los marcadores y los dos gráficos leen el archivo local. El filtro por fecha valida fechas de calendario reales en formato `AAAA-MM-DD`; una pasada es apta cuando su aptitud es de 70 % o más. El toggle de calor muestra una capa ponderada por aptitud simulada, no concentración física observada. La fecha más reciente que se muestra se deriva de la fecha mayor del dataset, no del momento de modificación del archivo.
 
-El proyecto está publicado desde la rama `main` y la carpeta raíz (`/`). Para comprobar la configuración, abre **Settings → Pages** en el repositorio. Al subir cambios a `main`, GitHub Pages vuelve a desplegar el sitio; revisa **Actions → pages build and deployment** y espera a que el flujo termine correctamente.
+Para reemplazar el ejemplo por datos oficiales de la clase, conserva una copia del JSON y reemplaza el arreglo por registros compatibles. Revisa primero sus nombres de campo, tipos, unidades, coordenadas y permiso de publicación. Si el nuevo archivo no incluye `isla` o `zona`, la interfaz informará que esa dimensión no está disponible. No publiques credenciales ni datos con restricciones.
 
-La URL pública es [https://estivenamaya23.github.io/Cooperativo_E_F_G_T/](https://estivenamaya23.github.io/Cooperativo_E_F_G_T/). Se verificó que la página, el JSON de muestra, JavaScript y CSS responden. El mapa base, las etiquetas y bibliotecas se obtienen de servicios externos y dependen de su disponibilidad y condiciones de uso.
+## Publicar en GitHub Pages
 
-## Archivos
+El proyecto usa la estructura existente en la raíz: `index.html`, `styles.css`, `app.js` y `data_copernicus_sample.json`; no requiere backend ni build. Para publicar cambios, selecciona en GitHub **Settings → Pages → Deploy from a branch**, elige una rama y la carpeta raíz (`/`), y espera el resultado en **Actions**.
 
-- `index.html`, `styles.css`, `app.js`: interfaz y lógica del dashboard.
-- `data_copernicus_sample.json`: 15 registros sintéticos de demostración.
-- `docs/reporte-tecnico.md`: comparación de alternativas tecnológicas.
-- `docs/presentacion-plastrack.pptx`: presentación de 10 diapositivas con notas del expositor y preguntas para la defensa.
-- `BITACORA_IA.md`: prompt y registro del apoyo de IA.
+La URL configurada en la documentación anterior respondió HTTP 200 el 16 de noviembre de 2026, antes de estos cambios locales. Esta versión modificada no se ha publicado porque no se hizo commit ni push. La configuración actual de Pages/Actions y la disponibilidad futura están **no verificadas**.
+
+El mapa usa teselas estándar de OpenStreetMap con atribución enlazada a la licencia. Sus servidores públicos son best-effort, tienen capacidad limitada y política de uso; no son un servicio de teselas ilimitado. Revisa las condiciones antes de escalar el uso.
+
+## Estructura existente
+
+- `index.html`: interfaz y referencias CDN.
+- `styles.css`: diseño adaptable.
+- `app.js`: carga y validación del JSON, filtros, KPI, mapa y gráficos.
+- `data_copernicus_sample.json`: 15 registros sintéticos, no modificados.
+- `docs/reporte-tecnico.md`: benchmarking y decisión técnica.
+- `BITACORA_IA.md`: registro del uso de IA.
