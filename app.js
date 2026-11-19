@@ -324,7 +324,7 @@ function markerColor(pass) {
   if (pass.aptitud_sensor_pct >= 70) {
     return "#23845b";
   }
-  return pass.aptitud_sensor_pct >= 40 ? "#d29a16" : "#c6473c";
+  return pass.aptitud_sensor_pct >= 40 ? "#d29a16" : "#6721de";
 }
 
 function heatColor(cloudiness) {
