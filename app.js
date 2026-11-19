@@ -329,7 +329,7 @@ function markerColor(pass) {
 
 function heatColor(cloudiness) {
   if (cloudiness >= 70) {
-    return "#d94135";
+    return "#6826d3";
   }
   return cloudiness >= 40 ? "#ef8b32" : "#287fbd";
 }
